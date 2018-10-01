@@ -1,0 +1,104 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+version = modVersion
+group = modGroup
+archivesBaseName = modBaseName
+sourceCompatibility = targetCompatibility = '1.8'
+
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = project.forgeVersion
+    runDir = "run"
+    mappings = project.mcpVersion
+}
+
+repositories{
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+    maven {
+        name 'Darkhax'
+        url 'https://maven.mcmoddev.com/'
+    }
+    maven{
+        name 'JEI'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
+    maven{
+        name 'CraftTweaker'
+        url 'http://maven.blamejared.com'
+    }
+    maven {
+        name = 'Waila'
+        url 'https://tehnut.info/maven'
+    }
+    maven {
+        name = 'Blood Magic'
+        url "http://tehnut.info/maven/"
+    }
+    maven {
+    	name = 'Baubles'
+    	url "https://maven.thiakil.com"
+    }
+    maven {
+        name = 'TOP'
+        url "http://maven.tterrag.com/"
+    }
+    maven{
+    	name = 'RF'
+    	url "http://maven.covers1624.net/"
+    }
+    maven{
+        name = 'Tinker'
+        url "http://dvs1.progwml6.com/files/maven/"
+    }
+}
+
+dependencies {
+    deobfCompile "mezz.jei:jei_1.12.2:4.8.5.144"
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}"
+    deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-${crafttweaker_version}"
+    deobfCompile "CraftTweaker2:ZenScript:1.12-${crafttweaker_version}"
+    deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
+}
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+jar {
+    manifest {
+        attributes "FMLAT": "compatskills_at.cfg"
+    }
+}
